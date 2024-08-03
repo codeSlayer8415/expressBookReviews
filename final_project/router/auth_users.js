@@ -75,6 +75,22 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
 });
 
+//deleting review
+regd_users.delete("/auth/review/:isbn",(req,res)=>{
+    let isbn=req.params.isbn;
+    let username=req.session.authorization['username'];
+    let rev=books[isbn].reviews[username];
+    if(rev)
+    {
+        //send a message that we deleted them successfully
+        delete books[isbn].reviews[username];
+        res.send(`Deleted the review made by you (i.e. by ${username}) successfully.\n
+        Content of review before deleting the review:${rev}\nFinal Book reviews after deleting your review: ${JSON.stringify(books[isbn])}`);
+
+    }
+    res.send(`There's is no review given by you(i.e. ${username}) for this book with title ${books[isbn].title}.Reviews made for this book are shown below: ${JSON.stringify(books[isbn])}`);
+})
+
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
